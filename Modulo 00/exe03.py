@@ -1,0 +1,2 @@
+# Faça um programa que mostre na tela uma letra de música que você gosta.
+print("Brilha, brilha, estrelinha \nLá no céu pequenininha\nSolitária se conduz\nPelo céu\ncom tua luz\n\nBrilha, brilha, estrelinha\nLá no céu pequenininha\nBrilha, brilha, estrelinha\nLá no céu pequenininha")
