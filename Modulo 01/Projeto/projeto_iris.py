@@ -6,7 +6,7 @@ iris = datasets.load_iris()
 dados = pd.DataFrame(data= np.c_[iris['data'], iris['target']], columns= iris['feature_names'] + ['target'])
 
 target2 = []
-target3 = []
+
 
 
 def arvore_modelo01(sl,sw,pl,pw):
@@ -44,24 +44,25 @@ def arvore_modelo01(sl,sw,pl,pw):
     
 
 
-def arvore_modelo02(sl,sw,pl,pw):
-    global target3
-    if pl <= 2.45:
+def arvore_modelo02(dados):
+    target3 = -1
+    if dados['petal length (cm)'] <= 2.45:
         print('setosa')
-        target3.append(0.0)
+        target3 = 0.0
     else:
-        if pw <= 1.75:
+        if dados['petal width (cm)'] <= 1.75:
             print('versicolor')
-            target3.append(1.0)
+            target3 = 1.0
         else:
             print('virginica')
-            target3.append(2.0)
+            target3 = 2.0
+    return target3
 
 def acuracia(acerto,tamanho_amostra):
     accuracy = acerto/tamanho_amostra
     return accuracy
 
-
+# Rodando modelo 01 com For explicito
 print("="*30)
 print("MODELO 01".center(30))
 print("="*30)
@@ -69,18 +70,14 @@ for i in dados.index:
     arvore_modelo01(dados['sepal length (cm)'][i],dados['sepal width (cm)'][i],dados['petal length (cm)'][i],dados['petal width (cm)'][i])
 print("="*30)
 dados['target2'] = target2
-#dados.to_excel('Blue\BlueEdTech\iris02.xlsx')
-tamanho_rows = len(dados.index)
-cont = 0
+
+# Rodando Modelo 02 usando função apply
 print("="*30)
 print("MODELO 02".center(30))
 print("="*30)
-while cont < tamanho_rows:
-    arvore_modelo02(dados['sepal length (cm)'][cont],dados['sepal width (cm)'][cont],dados['petal length (cm)'][cont],dados['petal width (cm)'][cont])
-    cont += 1
+dados['target3'] = dados.apply(arvore_modelo02,axis=1)
 
-dados['target3'] = target3
-#dados.to_excel('Blue\BlueEdTech\iris03.xlsx')
+
 print("="*100)
 print("ANALISE MODELO 01".center(100))
 print("="*100)
@@ -94,10 +91,12 @@ print(f"O modelo utilizado acertou: {acertos} iris em sua classificação")
 print("Abaixo segue tabela de erros")
 filtro = dados['target'] != dados['target2']
 filtro = dados[filtro]
-print(filtro)
+print(filtro.drop(columns=['target3']))
 
+tamanho_rows = len(dados.index)
 ac = acuracia(acertos,tamanho_rows)
 print(f"Accuracy: {ac}")
+
 print("="*100)
 print("ANALISE MODELO 02".center(100))
 print("="*100)
@@ -111,7 +110,7 @@ print(f"O modelo utilizado acertou: {acertos} iris em sua classificação")
 print("Abaixo segue tabela de erros")
 filtro2 = dados['target'] != dados['target3']
 filtro2 = dados[filtro2]
-print(filtro2)
+print(filtro2.drop(columns=['target2']))
 
 ac = acuracia(acertos,tamanho_rows)
 print(f"Accuracy: {ac}")
